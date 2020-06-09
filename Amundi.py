@@ -33,27 +33,28 @@ def transform(fileRequest, bucketResponse, keyResponse):
         currency = ["ADP",	"AED",	"AFA",	"ALL",	"AMD",	"ANG",	"AON",	"AOR",	"ARS",	"ATS",	"AUD",	"AWG",	"AZM",	"BAD",	"BBD",	"BDT",	"BEF",	"BGN",	"BHD",	"BIF",	"BMD",	"BND",	"BOB",	"BOV",	"BRL",	"BSD",	"BTN",	"BWP",	"BYB",	"BZD",	"CAD",	"CHF",	"CLF",	"CLP",	"CNY",	"COP",	"CRC",	"CUP",	"CVE",	"CYP",	"CZK",	"DEM",	"DJF",	"DKK",	"DOP",	"DZD",	"ECS",	"ECV",	"EEK",	"EGP",	"ESP",	"ETB",	"EUR",	"FIM",	"FJD",	"FKP",	"FRF",	"GBP",	"GEL",	"GHC",	"GIP",	"GMD",	"GNF",	"GRD",	"GTQ",	"GWP",	"GYD",	"HKD",	"HNL",	"HRK",	"HTG",	"HUF",	"IDR",	"IEP",	"ILS",	"INR",	"IQD",	"IRR",	"ISK",	"ITL",	"JMD",	"JOD",	"JPY",	"KES",	"KGS",	"KHR",	"KMF",	"KPW",	"KRW",	"KWD",	"KYD",	"KZT",	"LAK",	"LBP",	"LKR",	"LRD",	"LSL",	"LTL",	"LUF",	"LVL",	"LYD",	"MAD",	"MDL",	"MGF",	"MKD",	"MMK",	"MNT",	"MOP",	"MRO",	"MTL",	"MUR",	"MVR",	"MWK",	"MXN",	"MYR",	"MZM",	"NAD",	"NGN",	"NIO",	"NLG",	"NOK",	"NPR",	"NZD",	"OMR",	"PAB",	"PEN",	"PGK",	"PHP",	"PKR",	"PLN",	"PLZ",	"PTE",	"PYG",	"QAR",	"ROL",	"RUR",	"RWF",	"SAR",	"SBD",	"SCR",	"SDD",	"SEK",	"SGD",	"SHP",	"SIT",	"SKK",	"SLL",	"SOS",	"SRG",	"STD",	"SVC",	"SYP",	"SZL",	"THB",	"TJR",	"TMM",	"TND",	"TOP",	"TPE",	"TRL",	"TTD",	"TWD",	"TZS",	"UAG",	"UAK",	"UGX",	"USD",	"UYU",	"UZS",	"VEB",	"VND",	"VUV",	"WST",	"XAF",	"XCD",	"XEU",	"XOF",	"XPF",	"YER",	"YUM",	"ZAL",	"ZAR",	"ZMK",	"ZRN",	"ZWD",	"RUB",	"TRY",	"UAH",	"RON",	"CSD",	"RSD",	"GHS",	"AZN",	"MXV",	"BYR",	"ZMW",	"CNH"]
         
         df['TNACash']=''
-        df['SecurityCoupon']=''
-        df['SecurityMaturity']=''
-        df['MarketValue']=''
-        df['NumberOfShares']=''
+        df['SecuritySEDOL']=''
+        df['FundISIN']=''
+        df['Percent']=''
         df['PublicationDate']=''
+        df['SecurityCFI']=''
         
         columns={
-            'PositionDate':'PortfolioDate',
-            'AssetType':'SecurityCFI',
-            'SEDOL':'SecuritySEDOL',
-            'ISIN':'SecurityISIN',
-            'AssetName':'SecurityName',
-            'PortfolioCode': 'FundISIN',
-            'AssetCurrency':'SecurityCurrency',
-            'AssetCountry':'SecurityCountry',
-            'PositionWeight':'Percent',
-            'FundCurrency':'FundCurrency',
-            'SEDOL': 'SecuritySEDOL'
-            
+            'Date':'PortfolioDate',
+            'ID Fond':'FundOWN',
+            'ISIN HISTO': 'SecurityISIN',
+            'Libéllé valeur':'SecurityName',
+            'Pos': 'NumberOfShares',
+            'Val. boursiere': 'MarketValue',
+            'Cpn couru': 'SecurityCoupon',
+            'Echeance': 'SecurityMaturity',
+            'Valo': 'FundCurrency',
+            'Valeur': 'SecurityCurrency',
+            'Pays': 'SecurityCountry',
+            'Type Instrument': 'CFICode',            
             }
         df.columns = df.columns.to_series().replace(columns)
+
         column_list = [
                 'PortfolioDate',
                 'SecurityCFI',
@@ -82,7 +83,9 @@ def transform(fileRequest, bucketResponse, keyResponse):
             df['FundISIN'] = df['FundISIN'].str.strip()
             df['SecurityISIN'] = df['SecurityISIN'].str.strip()
             df['SecuritySEDOL'] = df['SecuritySEDOL'].astype(str).str.strip()
-                        
+            
+            
+            df['FundOWN'] = df['FundISIN'].map(funds).fillna('')            
             df['CFICode'] = df['SecurityCFI'].map(di).fillna('')
             
             df = df.replace(np.nan, '', regex=True) 
