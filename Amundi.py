@@ -95,7 +95,7 @@ def transform(fileRequest, bucketResponse, keyResponse):
             df['FundCurrency'] = df['FundCurrency'].apply(lambda i: i if i in currency else '')
                     
             df['Percent'] = round(df['Percent'].astype(float), 5)
-            #df['Market Value'] = round(df['Market Value'], 2)
+            df['Market Value'] = round(df['Market Value'], 2)
                
             df['SecurityISIN'] = df['SecurityISIN'].apply(lambda x: x if len(str(x)) == 12 else '')
             df['SecuritySEDOL'] = df['SecuritySEDOL'].apply(lambda x: x if len(str(x)) == 7 else '')
