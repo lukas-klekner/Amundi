@@ -85,8 +85,8 @@ def transform(fileRequest, bucketResponse, keyResponse):
             df['SecuritySEDOL'] = df['SecuritySEDOL'].astype(str).str.strip()
             
             
-            df['FundOWN'] = df['FundISIN'].map(funds).fillna('')            
-            df['CFICode'] = df['SecurityCFI'].map(di).fillna('')
+            df['FundISIN'] = df['FundOWN'].map(funds).fillna('')            
+            df['SecurityCFI'] = df['CFICode'].map(di).fillna('')
             
             df = df.replace(np.nan, '', regex=True) 
                     
