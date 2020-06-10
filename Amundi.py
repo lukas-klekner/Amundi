@@ -107,6 +107,9 @@ def transform(fileRequest, bucketResponse, keyResponse):
             
             df['Egen']=df.apply(lambda x: (x.SecurityName+x.SecurityCurrency+x.SecurityCountry).replace(' ', '') if len(str(x.SecurityISIN)) == 0 else '', axis=1)
             df['Egen']=df['Egen'].apply(lambda x: x.replace('%','/'))
+            
+            df['SecurityName']=df['SecurityName'].apply(lambda x: x.replace('%','% '))
+            df['SecurityName']=df['SecurityName'].apply(lambda x: x.replace('  ',' '))
 
             x2 = all(df['FundISIN'].str.len() == 12)
             x3 = all(df['FundISIN'].str[0:2].str.isalpha()==True)
