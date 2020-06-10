@@ -37,7 +37,7 @@ def transform(fileRequest, bucketResponse, keyResponse):
         df['FundISIN']=''
         df['Percent']=''
         df['PublicationDate']=''
-        df['SecurityCFI']=''
+        #df['SecurityCFI']=''
         
         columns={
             'Date':'PortfolioDate',
@@ -51,7 +51,7 @@ def transform(fileRequest, bucketResponse, keyResponse):
             'Valo': 'FundCurrency',
             'Valeur': 'SecurityCurrency',
             'Pays': 'SecurityCountry',
-            'Type Instrument': 'CFICode',            
+            'Type Instrument': 'SecurityCFI'        
             }
         df.columns = df.columns.to_series().replace(columns)
 
@@ -86,7 +86,7 @@ def transform(fileRequest, bucketResponse, keyResponse):
             
             
             df['FundISIN'] = df['FundOWN'].map(funds).fillna('')            
-            df['SecurityCFI'] = df['CFICode'].map(di).fillna('')
+            df['CFICode'] = df['SecurityCFI'].map(di).fillna('')
             
             df = df.replace(np.nan, '', regex=True) 
                     
@@ -94,8 +94,8 @@ def transform(fileRequest, bucketResponse, keyResponse):
             df['SecurityCurrency'] = df['SecurityCurrency'].apply(lambda i: i if i in currency else '')
             df['FundCurrency'] = df['FundCurrency'].apply(lambda i: i if i in currency else '')
                     
-            df['Percent'] = round(df['Percent'].astype(float), 5)
-            df['Market Value'] = round(df['Market Value'], 2)
+            #df['Percent'] = round(df['Percent'].astype(float), 5)
+            df['MarketValue'] = round(df['MarketValue'], 2)
                
             df['SecurityISIN'] = df['SecurityISIN'].apply(lambda x: x if len(str(x)) == 12 else '')
             df['SecuritySEDOL'] = df['SecuritySEDOL'].apply(lambda x: x if len(str(x)) == 7 else '')
@@ -106,7 +106,7 @@ def transform(fileRequest, bucketResponse, keyResponse):
             df["CurrentDate"] = datetime.today().strftime('%Y-%m-%dT%H:%M:%S+01:00')
             
             df['Egen']=df.apply(lambda x: (x.SecurityName+x.SecurityCurrency+x.SecurityCountry).replace(' ', '') if len(str(x.SecurityISIN)) == 0 else '', axis=1)
-
+            df['Egen']=df['Egen'].apply(lambda x: x.replace('%','/'))
 
             x2 = all(df['FundISIN'].str.len() == 12)
             x3 = all(df['FundISIN'].str[0:2].str.isalpha()==True)
